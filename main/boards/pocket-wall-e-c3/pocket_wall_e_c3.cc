@@ -151,17 +151,27 @@ private:
                                          DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y);
     }
 
-    void InitializeButton() {
-        action_button_.OnClick([this]() {
-            auto& app = Application::GetInstance();
-            if (app.GetDeviceState() == kDeviceStateStarting) {
-                EnterWifiConfigMode();
-                return;
-            }
-            app.ToggleChatState();
-        });
-        action_button_.OnLongPress([this]() { EnterWifiConfigMode(); });
-    }
+    
+void InitializeButton() {
+    action_button_.OnClick([this]() {
+        auto& app = Application::GetInstance();
+        auto state = app.GetDeviceState();
+
+        if (state == kDeviceStateStarting) {
+            EnterWifiConfigMode();
+            return;
+        }
+
+        // Tekan tombol saat idle: mulai listening manual.
+        // Saat listening, tekan lagi untuk menghentikannya.
+        app.ToggleChatState();
+    });
+
+    action_button_.OnLongPress([this]() {
+        EnterWifiConfigMode();
+    });
+}
+
 
 public:
     PocketWallEC3Board() : action_button_(ACTION_BUTTON_GPIO) {
