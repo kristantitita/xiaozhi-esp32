@@ -40,7 +40,7 @@ jobs:
 
           python scripts/build.py pocket-wall-e-c3 \
             --name pocket-wall-e-c3-pocket-esp-ai-by-huy-vector-en \
-            --wake-word hijason
+            --wake-word hiesp
 
       - name: Verify firmware
         shell: bash
