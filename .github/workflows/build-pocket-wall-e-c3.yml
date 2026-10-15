@@ -1,8 +1,16 @@
 
 name: Build Pocket Wall-E C3
 
-on:
+"on":
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/build-pocket-wall-e-c3.yml"
+      - "main/boards/pocket-wall-e-c3/**"
+      - "main/**"
+      - "scripts/**"
 
 permissions:
   contents: read
@@ -15,7 +23,7 @@ jobs:
 
     steps:
       - name: Checkout source
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
 
       - name: Build firmware
         shell: bash
@@ -23,10 +31,9 @@ jobs:
           source "$IDF_PATH/export.sh"
           python scripts/build.py pocket-wall-e-c3 --name pocket-wall-e-c3
 
-      - name: Upload firmware BIN
-        uses: actions/upload-artifact@v7
+      - name: Upload firmware
+        uses: actions/upload-artifact@v4
         with:
           name: pocket-wall-e-c3-firmware
           path: build/merged-binary.bin
           if-no-files-found: error
-
