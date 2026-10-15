@@ -1,1 +1,32 @@
 
+name: Build Pocket Wall-E C3
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: espressif/idf:v6.1
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v7
+
+      - name: Build firmware
+        shell: bash
+        run: |
+          source "$IDF_PATH/export.sh"
+          python scripts/build.py pocket-wall-e-c3 --name pocket-wall-e-c3
+
+      - name: Upload firmware BIN
+        uses: actions/upload-artifact@v7
+        with:
+          name: pocket-wall-e-c3-firmware
+          path: build/merged-binary.bin
+          if-no-files-found: error
+
