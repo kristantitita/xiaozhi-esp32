@@ -860,10 +860,12 @@ def _collect_variants(
     name_owners: dict[str, str] = {}
     identity_owners: dict[tuple[str, str], str] = {}
 
-    for cfg_path in sorted(_BOARDS_DIR.rglob(config_filename)):
+        for cfg_path in sorted(_BOARDS_DIR.rglob(config_filename)):
         board_dir = cfg_path.parent
         if board_dir.name == "common":
-            continue        board = board_dir.relative_to(_BOARDS_DIR).as_posix()
+            continue
+
+        board = board_dir.relative_to(_BOARDS_DIR).as_posix()
 
         if board_filter is not None and board != board_filter:
             continue
