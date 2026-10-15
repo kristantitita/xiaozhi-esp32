@@ -846,6 +846,7 @@ def _get_board_display_name(
 def _collect_variants(
     config_filename: str = "config.json",
     idf_version: tuple[int, int, int] = (6, 0, 0),
+    board_filter: str | None = None,
 ) -> list[dict[str, Any]]:
     """Traverse all boards under main/boards, collect variant information.
 
@@ -862,8 +863,10 @@ def _collect_variants(
     for cfg_path in sorted(_BOARDS_DIR.rglob(config_filename)):
         board_dir = cfg_path.parent
         if board_dir.name == "common":
+            continue        board = board_dir.relative_to(_BOARDS_DIR).as_posix()
+
+        if board_filter is not None and board != board_filter:
             continue
-        board = board_dir.relative_to(_BOARDS_DIR).as_posix()
 
         try:
             with cfg_path.open(encoding='utf-8') as f:
@@ -1929,7 +1932,11 @@ def main(argv: Optional[list[str]] = None) -> None:
         print(f"[ERROR] board_type {board_type_input} not found in main/CMakeLists.txt", file=sys.stderr)
         sys.exit(1)
 
-    variants_all = _collect_variants(config_filename=args.config, idf_version=idf_version)
+    variants_all = _collect_variants(
+    config_filename=args.config,
+    idf_version=idf_version,
+    board_filter=None if board_type_input == "all" else board_type_input,
+)
 
     if board_type_input == "all":
         selected_variants = variants_all
