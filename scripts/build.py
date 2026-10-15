@@ -854,13 +854,14 @@ def _collect_variants(
         [{"board": "bread-compact-ml307", "name": "bread-compact-ml307", "full_name": "bread-compact-ml307"}, ...]
         [{"board": "waveshare/esp32-p4-nano", "name": "esp32-p4-nano-10.1-a", "full_name": "waveshare-esp32-p4-nano-10.1-a"}, ...]
     """
+    
     variants: list[dict[str, str]] = []
     errors: list[str] = []
     type_owners: dict[str, str] = {}
     name_owners: dict[str, str] = {}
     identity_owners: dict[tuple[str, str], str] = {}
 
-        for cfg_path in sorted(_BOARDS_DIR.rglob(config_filename)):
+    for cfg_path in sorted(_BOARDS_DIR.rglob(config_filename)):
         board_dir = cfg_path.parent
         if board_dir.name == "common":
             continue
@@ -871,8 +872,10 @@ def _collect_variants(
             continue
 
         try:
-            with cfg_path.open(encoding='utf-8') as f:
+            with 
+     cfg_path.open(encoding='utf-8') as f:
                 cfg = json.load(f)
+
 
             manufacturer = _get_manufacturer(cfg)
             reported_type = _get_reported_type(cfg)
