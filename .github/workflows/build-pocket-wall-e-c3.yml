@@ -7,33 +7,51 @@ on:
     branches:
       - main
     paths:
-      - ".github/workflows/build-pocket-wall-e-c3.yml"
-      - "main/boards/pocket-wall-e-c3/**"
       - "main/**"
+      - "partitions/**"
       - "scripts/**"
-
-permissions:
-  contents: read
+      - "sdkconfig.defaults*"
+      - "config.json"
+      - ".github/workflows/build-pocket-wall-e-c3.yml"
 
 jobs:
   build:
+    name: Build Xiaozhi ESP32-C3
     runs-on: ubuntu-latest
+
     container:
       image: espressif/idf:v6.1
 
     steps:
-      - name: Checkout source
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build firmware
+      - name: Prepare ESP-IDF
         shell: bash
         run: |
-          source "$IDF_PATH/export.sh"
-          python scripts/build.py pocket-wall-e-c3 --name pocket-wall-e-c3-pocket-esp-ai-by-huy-vector-en
+          . "$IDF_PATH/export.sh"
+          idf.py --version
+          python --version
 
-      - name: Upload firmware
+      - name: Build Pocket Wall-E C3
+        shell: bash
+        run: |
+          . "$IDF_PATH/export.sh"
+
+          python scripts/build.py pocket-wall-e-c3 \
+            --name pocket-wall-e-c3-pocket-esp-ai-by-huy-vector-en \
+            --wake-word hijason
+
+      - name: Verify firmware
+        shell: bash
+        run: |
+          test -s build/merged-binary.bin
+          ls -lh build/merged-binary.bin
+
+      - name: Upload firmware artifact
         uses: actions/upload-artifact@v4
         with:
           name: pocket-wall-e-c3-firmware
           path: build/merged-binary.bin
           if-no-files-found: error
+          retention-days: 14
