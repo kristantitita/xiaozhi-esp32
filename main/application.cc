@@ -833,27 +833,25 @@ void Application::HandleToggleChatEvent() {
 }
 
 void Application::ContinueOpenAudioChannel(ListeningMode mode) {
-    // Check state again in case it was changed during scheduling
     if (GetDeviceState() != kDeviceStateConnecting) {
         return;
     }
 
-    // Switch to performance mode before connecting to reduce latency
     auto& board = Board::GetInstance();
     board.SetPowerSaveLevel(PowerSaveLevel::PERFORMANCE);
 
     if (!protocol_->IsAudioChannelOpened()) {
+        ESP_LOGI(TAG, "Opening audio channel...");
         if (!protocol_->OpenAudioChannel()) {
-            // Return to idle so the device is not stuck in the connecting
-            // state (not every failure path reports a network error)
+            ESP_LOGE(TAG, "Failed to open audio channel");
             SetDeviceState(kDeviceStateIdle);
             return;
         }
+        ESP_LOGI(TAG, "Audio channel opened");
     }
 
     SetListeningMode(mode);
 }
-
 void Application::HandleStartListeningEvent() {
     auto state = GetDeviceState();
 
