@@ -870,13 +870,11 @@ def _collect_variants(
 
         if board_filter is not None and board != board_filter:
             continue
-
+            
         try:
-            with 
-     cfg_path.open(encoding='utf-8') as f:
+            with cfg_path.open(encoding='utf-8') as f:
                 cfg = json.load(f)
-
-
+                
             manufacturer = _get_manufacturer(cfg)
             reported_type = _get_reported_type(cfg)
             target = cfg.get("target")
